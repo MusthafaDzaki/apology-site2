@@ -64,17 +64,38 @@
   .fade-out { opacity: 0; transform: scale(.96); pointer-events: none; }
 
   /* ---------- scene 1: envelope ---------- */
-  .intro-title {
-    font-family: "Caveat", cursive;
-    color: #f6dfe5;
-    font-size: clamp(30px, 7vw, 46px);
-    text-align: center;
-    margin-bottom: 36px;
-    animation: breathe 3s ease-in-out infinite;
+  .intro {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    width: 100%; max-width: 420px;
   }
-  @keyframes breathe { 50% { transform: translateY(-4px); } }
+  .eyebrow {
+    font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
+    color: #d9a6b4; margin-bottom: 10px;
+  }
+  .intro-title {
+    font-family: "Caveat", cursive; font-weight: 700;
+    color: #f6dfe5;
+    font-size: clamp(36px, 9vw, 52px); line-height: 1.1;
+    text-wrap: balance;
+  }
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--rose); font-size: 13px;
+    margin: 16px 0 40px;
+  }
+  .divider::before, .divider::after {
+    content: ""; width: 56px; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(232,137,159,.6));
+  }
+  .divider::after { transform: scaleX(-1); }
 
   .envelope-wrap { perspective: 1000px; cursor: pointer; position: relative; }
+  .envelope-wrap::before {
+    content: ""; position: absolute; inset: -30% -20%; z-index: -1;
+    background: radial-gradient(closest-side, rgba(232,137,159,.28), transparent);
+    animation: glow 3s ease-in-out infinite;
+  }
+  @keyframes glow { 50% { opacity: .55; transform: scale(.94); } }
 
   /* sticker decorations */
   .sticker {
@@ -101,16 +122,12 @@
     50% { transform: rotate(12deg) scale(1.15); }
     75% { transform: rotate(-6deg) scale(1.08); }
   }
-  .st-env-l { left: -38px; bottom: -46px; --r: -12deg; --s: 88px; }
-  .st-env-r { right: -30px; top: -24px; --r: 10deg; --s: 82px; --d: -1.4s; }
   .st-paper-r { right: 6px; top: -44px; --r: 9deg; --s: 84px; }
   .st-paper-l { left: 6px; bottom: -40px; --r: -10deg; --s: 80px; --d: -1.6s; }
   .ask { position: relative; }
   .final { position: relative; }
   @media (min-width: 700px) {
     .sticker { --s: 120px !important; }
-    .st-env-l { left: -90px; }
-    .st-env-r { right: -80px; top: -40px; }
     .st-paper-r { right: -50px; top: -60px; }
     .st-paper-l { left: -60px; bottom: -50px; }
   }
@@ -164,10 +181,12 @@
   }
   .envelope.open .seal { opacity: 0; transform: translate(-50%,-50%) scale(1.6); }
   .tap-hint {
-    margin-top: 30px; color: #e7c3cd; font-style: italic; font-size: 18px; letter-spacing: .5px;
-    animation: blink 1.8s ease-in-out infinite;
+    margin-top: 44px; padding: 8px 20px; border-radius: 999px;
+    color: #f0d3db; font-style: italic; font-size: 17px; letter-spacing: .3px;
+    border: 1px solid rgba(232,137,159,.35); background: rgba(255,255,255,.04);
+    animation: blink 2.2s ease-in-out infinite;
   }
-  @keyframes blink { 50% { opacity: .35; } }
+  @keyframes blink { 50% { opacity: .5; } }
 
   /* ---------- scene 2: letter ---------- */
   .paper {
@@ -199,6 +218,14 @@
   }
   .para.show { opacity: 1; transform: none; filter: none; }
   .para em { color: var(--rose-deep); font-style: italic; }
+  .para.sorry-lines {
+    font-style: italic; color: var(--rose-deep);
+    border-left: 2px solid rgba(196,83,111,.35); padding-left: 16px;
+  }
+  .final .after-vid {
+    font-family: "Caveat", cursive; font-size: clamp(26px, 6vw, 32px);
+    color: #f6dfe5; margin-top: 18px; line-height: 1.3;
+  }
   .signoff {
     margin-top: 28px; text-align: right;
     opacity: 0; transition: opacity 1s ease;
@@ -266,7 +293,10 @@
 
 <!-- scene 1 -->
 <section class="scene" id="s-intro">
+  <div class="intro">
+  <p class="eyebrow">sebuah surat</p>
   <h1 class="intro-title">ada surat kecil buat kamu, Nia</h1>
+  <div class="divider">♡</div>
   <div class="envelope-wrap" id="envBtn" role="button" tabindex="0" aria-label="Buka surat">
     <div class="envelope" id="envelope">
       <div class="letter-peek">untuk kamu ♡</div>
@@ -274,10 +304,9 @@
       <div class="flap"></div>
       <div class="seal">N</div>
     </div>
-    <div class="sticker st-env-l"><img src="bunny.jpg" alt="" /></div>
-    <div class="sticker st-env-r"><img src="kitty.jpg" alt="" /></div>
   </div>
   <p class="tap-hint">click amplopnya untuk membuka</p>
+  </div>
 </section>
 
 <!-- scene 2 -->
@@ -286,14 +315,18 @@
     <div class="sticker st-paper-r"><img src="kitty.jpg" alt="" /></div>
     <div class="sticker st-paper-l"><img src="bunny.jpg" alt="" /></div>
     <div class="greeting">dear Nia,</div>
-    <p class="para">aku sadar aku salah, dan kalo sekedar kata maaf terlalu kecil dibanding apa yang kamu rasain. tapi aku tetep bakal ngucapin dari lubuk hati aku yang paling dalam, <em>aku salah dan aku nyesel udah bikin kamu kecewa.</em></p>
+    <p class="para">niaaa, ini pertama kali aku buat surat kaya ginii jadi maaf yaa kalo berantakan hehe.</p>
+    <p class="para">aku mulai dari mana yaa...??</p>
+    <p class="para">nia, aku sadar aku salah, dan kalo sekedar kata maaf terlalu kecil dibanding apa yang kamu rasain. tapi aku tetep bakal ngucapin dari lubuk hati aku yang paling dalam, <em>aku salah dan aku nyesel udah bikin kamu kecewa.</em></p>
     <p class="para">aku ga mau bela diri aku disini. apapun alasan aku, yang kamu rasain itu nyata dan datang dari sikap aku. aku sadar nggak seharusnya aku lakuin hal itu dan buat orang yang aku sayang merasa ngga dihargain.</p>
-    <p class="para">aku nggak minta kamu langsung lupa dan maafin, tapi seenggaknya aku minta kesempatan buat buktiin, yang bukan cuma kata kata, <em>tapi lewat sikap aku.</em></p>
+    <p class="para sorry-lines">i'm sorry for the things i did and didn't do<br>i'm sorry for every word that hurt you,<br>i'm sorry for every moment that made you doubt,<br>i'm sorry for hurting you in ways that i knew and didn't</p>
+    <p class="para">aku bener bener nyesel dan kalau kamu mau bersedia. aku mau belajar jadi versi yang lebih baik buat kamu. aku bakal mencoba yang terbaik untuk ga ngulangin semua kesalahan aku, dan kalau aku buat kesalahan lagi, please communicate so i could apologize and make up for it :(</p>
+    <p class="para">i know you're probably tired of hearing me say sorry, but please.. <em>i would rather apologize a million times than losing you</em></p>
     <div class="signoff">
       <small>Sincerely,</small>
       <span class="name">Dzaki</span>
     </div>
-    <div class="progress" id="progress"><span></span><span></span><span></span><span></span></div>
+    <div class="progress" id="progress"></div>
     <div class="controls">
       <button class="btn" id="nextBtn">lanjut baca</button>
     </div>
@@ -409,6 +442,7 @@
 
   /* scene 2: reveal paragraphs one by one */
   const steps = [...document.querySelectorAll(".para"), document.querySelector(".signoff")];
+  steps.forEach(() => $("progress").appendChild(document.createElement("span")));
   const dots = [...$("progress").children];
   let idx = 0;
   function revealNext() {
@@ -481,6 +515,7 @@
     showFinal(`
       <h2>makasih, Nia ♡</h2>
       <video id="vid" class="vid" src="video.mp4" controls playsinline preload="auto"></video>
+      <p class="after-vid">chat aku kamu bisa ketemu kapan yaa :)))))</p>
       <button class="btn light restart" id="restart">baca lagi dari awal</button>
     `, true);
     setTimeout(() => { const v = $("vid"); if (v) v.play().catch(() => {}); }, 900);
